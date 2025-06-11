@@ -38,10 +38,11 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.logging)
             implementation(libs.kotlin.json.stream)
+            implementation("io.github.oshai:kotlin-logging:7.0.7")
         }
 
         androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.client.android)
         }
 
         iosMain.dependencies {

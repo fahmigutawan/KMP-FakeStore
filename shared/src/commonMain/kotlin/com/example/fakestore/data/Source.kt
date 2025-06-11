@@ -4,24 +4,17 @@ import com.example.fakestore.model.response.SingleProductResponse
 import com.example.fakestore.util.getHttpClientEngine
 import com.fab1an.kotlinjsonstream.JsonReader
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import io.ktor.util.logging.KtorSimpleLogger
 
 class Source {
-    val client = HttpClient(getHttpClientEngine()) {
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.ALL
-        }
-    }
+    val client = HttpClient(getHttpClientEngine())
+
     @NativeCoroutines
     suspend fun getProducts(): List<SingleProductResponse> {
         val json = client.get("https://fakestoreapi.com/products").bodyAsText()

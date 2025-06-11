@@ -1,6 +1,6 @@
 package com.example.fakestore.util
 
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.engine.android.Android
 
-actual fun getHttpClientEngine(): HttpClientEngine = OkHttp.create()
+actual fun getHttpClientEngine(): HttpClientEngine = Android.create()
