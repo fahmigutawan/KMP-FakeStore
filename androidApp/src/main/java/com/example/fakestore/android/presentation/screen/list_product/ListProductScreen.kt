@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -52,19 +53,18 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListProductScreen(
-    onProductClick:(id: Int) -> Unit
+    onProductClick: (id: Int) -> Unit,
 ) {
     val viewModel = hiltViewModel<ListProductViewModel>()
-    val products = viewModel.products.collectAsState()
-    val banners = viewModel.banners.collectAsState()
-    val coroutine = rememberCoroutineScope()
+    val products = viewModel.products.collectAsStateWithLifecycle()
+    val banners = viewModel.banners.collectAsStateWithLifecycle()
     val bannerPagerState = rememberPagerState { banners.value.data?.size ?: 0 }
 
     LaunchedEffect(true) {
-        while(true){
-            if(!bannerPagerState.isScrollInProgress){
+        while (true) {
+            if (!bannerPagerState.isScrollInProgress) {
                 delay(3000)
-                if(bannerPagerState.canScrollForward){
+                if (bannerPagerState.canScrollForward) {
                     bannerPagerState.animateScrollToPage(bannerPagerState.currentPage + 1)
                 } else {
                     bannerPagerState.animateScrollToPage(0)

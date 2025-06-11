@@ -56,6 +56,40 @@ class Source {
     }
 
     @NativeCoroutines
+    suspend fun getProductById(id: Int): SingleProductResponse {
+        val json = client
+            .get("https://fakestoreapi.com/products/$id")
+            .bodyAsText()
+        val jsonReader = JsonReader(json)
+
+        jsonReader.beginObject()
+        var data = SingleProductResponse(
+            id = 0,
+            title = "",
+            price = .0,
+            description = "",
+            category = "",
+            image = ""
+        )
+
+        while (jsonReader.hasNext()){
+            when(jsonReader.nextName()){
+                "id" -> data = data.copy(id = jsonReader.nextInt())
+                "title" -> data = data.copy(title = jsonReader.nextString())
+                "price" -> data = data.copy(price = jsonReader.nextDouble())
+                "description" -> data = data.copy(description = jsonReader.nextString())
+                "category" -> data = data.copy(category = jsonReader.nextString())
+                "image" -> data = data.copy(image = jsonReader.nextString())
+                else -> jsonReader.skipValue()
+            }
+        }
+
+        jsonReader.endObject()
+
+        return data
+    }
+
+    @NativeCoroutines
     suspend fun getBanners(): List<SingleBannerResponse> {
         val json = client
             .get("https://my-json-server.typicode.com/fahmigutawan/FakeDB-FahmiStore/banner")

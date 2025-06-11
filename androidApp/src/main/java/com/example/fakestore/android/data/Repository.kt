@@ -9,11 +9,15 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val source: Source,
 ) {
-    fun getProducts() = getResponse<List<SingleProductResponse>> {
+    fun getProducts() = getResponse {
         source.getProducts()
     }
 
-    fun getBanners() = getResponse<List<SingleBannerResponse>> {
+    fun getBanners() = getResponse {
         source.getBanners()
+    }
+
+    fun getProductById(id: Int) = getResponse {
+        source.getProductById(id)
     }
 }
