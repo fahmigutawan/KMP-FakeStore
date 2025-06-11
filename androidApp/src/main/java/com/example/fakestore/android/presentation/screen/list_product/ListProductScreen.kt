@@ -30,7 +30,9 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +47,7 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.example.fakestore.util.Resource
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +55,21 @@ fun ListProductScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<ListProductViewModel>()
     val products = viewModel.products.collectAsState()
     val banners = viewModel.banners.collectAsState()
+    val coroutine = rememberCoroutineScope()
     val bannerPagerState = rememberPagerState { banners.value.data?.size ?: 0 }
+
+    LaunchedEffect(true) {
+        while(true){
+            if(!bannerPagerState.isScrollInProgress){
+                delay(3000)
+                if(bannerPagerState.canScrollForward){
+                    bannerPagerState.animateScrollToPage(bannerPagerState.currentPage + 1)
+                } else {
+                    bannerPagerState.animateScrollToPage(0)
+                }
+            }
+        }
+    }
 
     Scaffold {
         when (products.value) {
@@ -90,17 +107,22 @@ fun ListProductScreen(modifier: Modifier = Modifier) {
                         HorizontalPager(
                             state = bannerPagerState,
                             beyondViewportPageCount = 2,
-                            pageSpacing = (-48).dp
+                            pageSpacing = (-24).dp
                         ) {
                             val item = banners.value.data?.get(it)
 
-                            Box(modifier = Modifier.clip(RoundedCornerShape(16.dp))) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                            ) {
                                 AsyncImage(
                                     model = item?.image ?: "",
                                     contentDescription = "",
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .aspectRatio(16f / 9f)
+                                        .aspectRatio(16f / 8f),
+                                    contentScale = ContentScale.Crop
                                 )
                             }
                         }
