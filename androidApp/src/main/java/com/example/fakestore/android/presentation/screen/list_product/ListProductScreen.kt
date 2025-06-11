@@ -51,7 +51,9 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListProductScreen(modifier: Modifier = Modifier) {
+fun ListProductScreen(
+    onProductClick:(id: Int) -> Unit
+) {
     val viewModel = hiltViewModel<ListProductViewModel>()
     val products = viewModel.products.collectAsState()
     val banners = viewModel.banners.collectAsState()
@@ -135,7 +137,7 @@ fun ListProductScreen(modifier: Modifier = Modifier) {
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp),
                                 onClick = {
-                                    //TODO
+                                    onProductClick(_item.id)
                                 },
                                 elevation = CardDefaults.elevatedCardElevation(
                                     defaultElevation = 2.dp
