@@ -1,6 +1,7 @@
 package com.example.fakestore.android.data
 
 import com.example.fakestore.data.Source
+import com.example.fakestore.model.response.SingleBannerResponse
 import com.example.fakestore.model.response.SingleProductResponse
 import com.example.fakestore.util.getResponse
 import javax.inject.Inject
@@ -10,5 +11,9 @@ class Repository @Inject constructor(
 ) {
     fun getProducts() = getResponse<List<SingleProductResponse>> {
         source.getProducts()
+    }
+
+    fun getBanners() = getResponse<List<SingleBannerResponse>> {
+        source.getBanners()
     }
 }

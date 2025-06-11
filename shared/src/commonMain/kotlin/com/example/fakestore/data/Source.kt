@@ -1,5 +1,6 @@
 package com.example.fakestore.data
 
+import com.example.fakestore.model.response.SingleBannerResponse
 import com.example.fakestore.model.response.SingleProductResponse
 import com.example.fakestore.util.getHttpClientEngine
 import com.fab1an.kotlinjsonstream.JsonReader
@@ -23,7 +24,7 @@ class Source {
         val jsonReader = JsonReader(json)
         jsonReader.beginArray()
 
-        while(jsonReader.hasNext()){
+        while (jsonReader.hasNext()) {
             jsonReader.beginObject()
             var data = SingleProductResponse(
                 id = 0,
@@ -34,8 +35,8 @@ class Source {
                 image = ""
             )
 
-            while(jsonReader.hasNext()){
-                when(jsonReader.nextName()){
+            while (jsonReader.hasNext()) {
+                when (jsonReader.nextName()) {
                     "id" -> data = data.copy(id = jsonReader.nextInt())
                     "title" -> data = data.copy(title = jsonReader.nextString())
                     "price" -> data = data.copy(price = jsonReader.nextDouble())
@@ -45,6 +46,38 @@ class Source {
                     else -> jsonReader.skipValue()
                 }
             }
+            jsonReader.endObject()
+            list.add(data)
+        }
+
+        jsonReader.endArray()
+
+        return list
+    }
+
+    @NativeCoroutines
+    suspend fun getBanners(): List<SingleBannerResponse> {
+        val json = client
+            .get("https://my-json-server.typicode.com/fahmigutawan/FakeDB-FahmiStore/banner")
+            .bodyAsText()
+        val list = ArrayList<SingleBannerResponse>()
+
+        val jsonReader = JsonReader(json)
+
+        jsonReader.beginArray()
+
+        while (jsonReader.hasNext()) {
+            var data = SingleBannerResponse("", "")
+            jsonReader.beginObject()
+
+            while (jsonReader.hasNext()) {
+                when (jsonReader.nextName()) {
+                    "id" -> data = data.copy(id = jsonReader.nextString())
+                    "image" -> data = data.copy(image = jsonReader.nextString())
+                    else -> jsonReader.skipValue()
+                }
+            }
+
             jsonReader.endObject()
             list.add(data)
         }
